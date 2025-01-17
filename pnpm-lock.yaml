@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2025 Taye Adeyemi <dev@taye.me>
-#
-# SPDX-License-Identifier: AGPL-3.0-only
-
 lockfileVersion: '9.0'
 
 settings:
@@ -76,6 +72,9 @@ importers:
       rollup-plugin-delete:
         specifier: ^2.1.0
         version: 2.1.0(rollup@4.30.1)
+      rollup-plugin-dts:
+        specifier: ^6.1.1
+        version: 6.1.1(rollup@4.30.1)(typescript@5.7.3)
       rollup-plugin-filesize:
         specifier: ^10.0.0
         version: 10.0.0
@@ -2688,6 +2687,13 @@ packages:
     engines: {node: '>=10'}
     peerDependencies:
       rollup: '*'
+
+  rollup-plugin-dts@6.1.1:
+    resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      rollup: ^3.29.4 || ^4
+      typescript: ^4.5 || ^5.0
 
   rollup-plugin-filesize@10.0.0:
     resolution: {integrity: sha512-JAYYhzCcmGjmCzo3LEHSDE3RAPHKIeBdpqRhiyZSv5o/3wFhktUOzYAWg/uUKyEu5dEaVaql6UOmaqHx1qKrZA==}
@@ -6098,6 +6104,14 @@ snapshots:
     dependencies:
       del: 5.1.0
       rollup: 4.30.1
+
+  rollup-plugin-dts@6.1.1(rollup@4.30.1)(typescript@5.7.3):
+    dependencies:
+      magic-string: 0.30.17
+      rollup: 4.30.1
+      typescript: 5.7.3
+    optionalDependencies:
+      '@babel/code-frame': 7.26.2
 
   rollup-plugin-filesize@10.0.0:
     dependencies:

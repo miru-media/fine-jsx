@@ -178,7 +178,8 @@ const createElementHNode = (type: string | Element, props: ComponentProps): HNod
 
   const parentScope = getCurrentScope()
 
-  if (parentScope == undefined) throw new Error(`[miru] jsx element must be created within an EffectScope`)
+  if (parentScope == undefined)
+    throw new Error(`[fine-jsx] jsx element must be created within an EffectScope`)
 
   if (props.children != null) {
     watch([() => parentScope.run(() => arrayFlatToValue(props.children))], ([children]) => {
@@ -285,7 +286,7 @@ const createElementHNode = (type: string | Element, props: ComponentProps): HNod
 export const Fragment = (props: { children?: HNodeChild[] }) => h('#fragment', props)
 
 export const render = (node: JSX.Element, root: ParentNode): Stop => {
-  if ((root as ParentNode | null) == null) throw new Error(`[miru] No root to render into`)
+  if ((root as ParentNode | null) == null) throw new Error(`[fine-jsx] No root to render into`)
 
   root.appendChild(node.el)
 

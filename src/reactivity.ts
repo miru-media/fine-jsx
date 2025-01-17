@@ -30,7 +30,7 @@ export class EffectScope {
 
   run<T>(fn: () => T) {
     // eslint-disable-next-line no-console
-    if (import.meta.env.DEV && !this.active) console.warn(`[miru] can't run in stopped scope`)
+    if (import.meta.env.DEV && !this.active) console.warn(`[fine-jsx] can't run in stopped scope`)
 
     const prevScope = currentScope
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -45,7 +45,8 @@ export class EffectScope {
 
   stop() {
     // eslint-disable-next-line no-console
-    if (import.meta.env.DEV && !this.active) console.warn('[miru] trying to stop already stopped EffectScope')
+    if (import.meta.env.DEV && !this.active)
+      console.warn('[fine-jsx] trying to stop already stopped EffectScope')
 
     const cleanups = this._cleanups
 
@@ -87,7 +88,7 @@ class RefImpl<T = unknown> implements Ref {
   }
 
   private _set(value: T) {
-    if (this._r) throw new Error(`[miru] Can't set computed value`)
+    if (this._r) throw new Error(`[fine-jsx] Can't set computed value`)
 
     this._v.value = value
   }
@@ -210,7 +211,7 @@ const effectInternal = (
   hooks: Record<symbol, (() => void) | undefined>,
 ) => {
   const scope = currentScope
-  if (scope != undefined && !scope.active) throw new Error(`[miru] Scope is already disposed`)
+  if (scope != undefined && !scope.active) throw new Error(`[fine-jsx] Scope is already disposed`)
 
   let cleanup: (() => void) | undefined
   const onCleanup: OnCleanup = (callback) => (cleanup = callback)
