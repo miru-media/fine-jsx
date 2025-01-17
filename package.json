@@ -1,9 +1,9 @@
 {
   "name": "fine-jsx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A minimal JSX runtime with fine-grained reactivity",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
   "publishConfig": {
     "exports": {
       ".": {
@@ -28,11 +28,11 @@
   "scripts": {
     "build": "NODE_ENV=production rollup --config rollup.config.js && pnpm run types",
     "build:dev": "NODE_ENV=development rollup --config rollup.config.js",
-    "check": "tsc --incremental",
+    "check": "tsc -b --noEmit --incremental",
     "types": "tsc --emitDeclarationOnly --declaration --stripInternal --module preserve --outDir dist src/{index,composables,jsx-runtime}.ts env.d.ts",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "@reactively/core": "^0.0.8"
