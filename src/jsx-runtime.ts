@@ -21,8 +21,6 @@ type MaybeArray<T> = T | T[]
 
 type NativeElement = Element
 declare global {
-  /** @internal */
-
   export namespace JSX {
     type IntrinsicElements = Record<string, unknown>
 
@@ -31,6 +29,7 @@ declare global {
       marker?: Node
       scope?: EffectScope
       type: Component | string | NativeElement
+      /** @internal */
       [HNODE_MARKER]: true
     }
   }
