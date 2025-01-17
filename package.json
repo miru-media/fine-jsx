@@ -1,0 +1,93 @@
+{
+  "name": "fine-jsx",
+  "version": "0.0.0",
+  "description": "A minimal JSX runtime with fine-grained reactivity",
+  "type": "module",
+  "main": "index.js",
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./dist/index.js"
+      },
+      "composables": {
+        "import": "./dist/composables.js"
+      },
+      "./jsx-runtime": {
+        "import": "./dist/jsx-runtime.js"
+      },
+      "./jsx-dev-runtime": {
+        "import": "./dist/jsx-dev-runtime.js"
+      }
+    }
+  },
+  "sideEffects": "false",
+  "files": [
+    "dist"
+  ],
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "tsc -b --noEmit && NODE_ENV=production rollup --config rollup.config.js",
+    "build:dev": "NODE_ENV=development rollup --config rollup.config.js",
+    "check": "tsc --incremental",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepare": "husky",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@reactively/core": "^0.0.8"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@eslint/js": "^9.18.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-replace": "^6.0.2",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^22.10.7",
+    "conventional-changelog-cli": "^5.0.0",
+    "eslint": "^9.18.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.1",
+    "prettier": "^3.4.2",
+    "rollup": "^4.30.1",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "rollup-plugin-delete": "^2.1.0",
+    "rollup-plugin-filesize": "^10.0.0",
+    "terser": "^5.37.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vite": "^6.0.7"
+  },
+  "keywords": [
+    "jsx",
+    "runtime",
+    "signals",
+    "reactivity",
+    "reactive",
+    "lightweight",
+    "vanilla"
+  ],
+  "author": "Taye Adeyemi",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://gitea.com/miru/fine-jsx.git"
+  },
+  "lint-staged": {
+    "**/*.((ts|js|cjs)?(x)|vue|md)": [
+      "eslint --quiet --fix",
+      "prettier --check --write"
+    ],
+    "**/*.(yaml|yml|json|css)": "prettier --check --write"
+  },
+  "browserslist": [
+    "defaults and supports es6-module",
+    "maintained node versions"
+  ]
+}
