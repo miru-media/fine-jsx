@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { autoStabilize, Reactive, reactive as reactive_ } from '@reactively/core'
+import { autoStabilize, Reactive, reactive as reactive_, stabilize } from '@reactively/core'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export const isFunction = (value: unknown): value is Function => typeof value === 'function'
@@ -44,8 +44,8 @@ export class EffectScope {
   }
 
   stop() {
-    // eslint-disable-next-line no-console
     if (import.meta.env.DEV && !this.active)
+      // eslint-disable-next-line no-console
       console.warn('[fine-jsx] trying to stop already stopped EffectScope')
 
     const cleanups = this._cleanups
@@ -243,3 +243,5 @@ const effectInternal = (
  * A lot like Vue's `watchEffect(callback)`
  */
 export const effect = (callback: (onCleanup: OnCleanup) => unknown) => effectInternal(callback, {})
+
+export { stabilize as __stabilize__ }
