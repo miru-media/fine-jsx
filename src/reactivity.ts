@@ -115,7 +115,12 @@ export function ref<T>(initialValue?: T) {
 export const computed = <T>(getter: () => T, equals?: (a: T, b: T | undefined) => boolean): Ref<T> => {
   const reactive = reactive_(getter, { equals })
 
-  currentScope?._cleanups.add(() => ((reactive as unknown as { fn?: typeof getter }).fn = undefined))
+  currentScope?._cleanups.add(() => {
+    const reactiv = reactive as unknown as { fn?: () => void; equals: () => boolean }
+
+    reactiv.fn = () => undefined
+    reactiv.equals = () => true
+  })
 
   return new RefImpl(reactive)
 }
