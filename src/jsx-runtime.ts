@@ -291,7 +291,7 @@ export const render = (node: JSX.Element, root: ParentNode): Stop => {
 
   return () => {
     node.scope?.stop()
-    root.removeChild(node.el)
+    if (!isDocFrag(node.el)) root.removeChild(node.el)
   }
 }
 
