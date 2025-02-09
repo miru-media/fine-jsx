@@ -112,18 +112,8 @@ export function ref<T>(initialValue?: T) {
   return new RefImpl(initialValue)
 }
 
-export const computed = <T>(getter: () => T, equals?: (a: T, b: T | undefined) => boolean): Ref<T> => {
-  const reactive = reactive_(getter, { equals })
-
-  currentScope?._cleanups.add(() => {
-    const reactiv = reactive as unknown as { fn?: () => void; equals: () => boolean }
-
-    reactiv.fn = () => undefined
-    reactiv.equals = () => true
-  })
-
-  return new RefImpl(reactive)
-}
+export const computed = <T>(getter: () => T, equals?: (a: T, b: T | undefined) => boolean): Ref<T> =>
+  new RefImpl(reactive_(getter, { equals }))
 
 export type MaybeRef<T = unknown> = Ref<T> | T
 export type MaybeRefOrGetter<T = unknown> = MaybeRef<T> | Reactive<T> | (() => T)
