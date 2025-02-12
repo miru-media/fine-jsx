@@ -136,10 +136,38 @@ const setAttribute = (element: Element, name: string, value: unknown) => {
 }
 /* eslint-enable @typescript-eslint/no-base-to-string */
 
+type Context = Record<string | symbol, unknown>
+
+let currentContext: Context | undefined
+
+const withContext = <T>(current: Context | undefined, fn: () => T) => {
+  const prevContext = currentContext
+
+  currentContext = current
+  const res = fn()
+  currentContext = prevContext
+
+  return res
+}
+
+export const provide = (key: string | symbol, value: unknown) => {
+  if (!currentContext) throw new Error('[fine-jsx] provide() called outside component context!')
+
+  currentContext[key] = value
+}
+export const inject = <T>(key: string | symbol, defaultValue?: T) => {
+  if (!currentContext) throw new Error('[fine-jsx] inject() called outside component context!')
+
+  const value = currentContext[key]
+  if (value === undefined) return defaultValue
+  return value as T
+}
+
 export const h = (type: string | Component | Element, props: ComponentProps): JSX.Element => {
   if (typeof type === 'function') {
     const scope = createEffectScope()
-    const hNode = scope.run(() => type(props))
+    const context = { ...currentContext }
+    const hNode = withContext(context, () => scope.run(() => type(props)))
 
     return { ...hNode, type, scope }
   }
@@ -181,7 +209,11 @@ const createElementHNode = (type: string | Element, props: ComponentProps): HNod
     throw new Error(`[fine-jsx] jsx element must be created within an EffectScope`)
 
   if (props.children != null) {
-    watch([() => parentScope.run(() => arrayFlatToValue(props.children))], ([children]) => {
+    const context = currentContext
+    const getChildren = () =>
+      withContext(context, () => parentScope.run(() => arrayFlatToValue(props.children)))
+
+    watch([getChildren], ([children]) => {
       const appendTo = marker?.parentNode ?? element
 
       children.forEach((child, childIndex) => {
