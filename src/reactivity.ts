@@ -224,6 +224,7 @@ const effectInternal = (
   const stopReactive = () => (r.value = undefined as never)
 
   const stop = () => {
+    cleanup?.()
     scope?._cleanups.delete(stop)
     stopReactive()
     hooks[ON_STOP]?.()
