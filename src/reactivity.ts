@@ -139,7 +139,7 @@ export const toRef = <T>(value: MaybeRefOrGetter<T>): Ref<T> => {
 
 export const createEffectScope = () => new EffectScope()
 
-export const onScopeDispose = (fn: () => void) => {
+export const onScopeDispose = (fn: () => unknown) => {
   currentScope?._cleanups.add(fn)
 }
 
@@ -149,7 +149,7 @@ type MapSources<T, IsPrev extends boolean = false> = {
   [K in keyof T]: T[K] extends WatchSource<infer V> ? V | (IsPrev extends true ? undefined : never) : never
 }
 
-type OnCleanup = (callback: () => void) => void
+type OnCleanup = (callback: () => unknown) => void
 
 const ON_STOP = Symbol('miru-on-stop')
 
