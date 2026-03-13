@@ -304,7 +304,8 @@ const createElementHNode = (type: string | Element, props: ComponentProps): HNod
         continue
       }
 
-      if (key in element && key !== 'style') (element as any)[key] = null
+      if (key in element && key !== 'style' && !(key === 'list' && element.nodeName === 'INPUT'))
+        (element as any)[key] = null
       else element.removeAttribute(key === 'className' ? 'class' : key)
     }
   })

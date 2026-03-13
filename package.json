@@ -1,6 +1,6 @@
 {
   "name": "fine-jsx",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "description": "A minimal JSX runtime with fine-grained reactivity",
   "type": "module",
   "main": "dist/index.js",
