@@ -276,7 +276,7 @@ const createElementHNode = (type: string | Element, props: ComponentProps): HNod
             ? key
             : toKebabCase(key)
         setAttribute(element, svgKey, String(toValue(value)))
-      } else if (key === 'style' || !(key in element)) {
+      } else if (key === 'style' || !(key in element) || (key === 'list' && element.nodeName === 'INPUT')) {
         setAttribute(element, key, toValue(value) as string)
       } else {
         ;(element as any)[key] = toValue(value)
