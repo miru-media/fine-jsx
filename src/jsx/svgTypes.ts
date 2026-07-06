@@ -39,7 +39,7 @@ export const SVG_TYPES = new Set([
   'fetile',
   'feturbulence',
   'filter',
-  'foreignobject',
+  'foreignObject',
   'g',
   'geometry',
   'gradient',
