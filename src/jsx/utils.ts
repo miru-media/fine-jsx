@@ -60,7 +60,13 @@ export const unappendAndStop = (child: AppendedChild, parent: Node) => {
 }
 
 export const isIgnoredPropKey = (key: string) =>
-  key === 'children' || key === 'ref' || key === 'innerHTML' || key === 'innerText'
+  key === 'children' ||
+  key === 'ref' ||
+  key === 'innerHTML' ||
+  key === 'innerText' ||
+  key === 'outerHTML' ||
+  key === 'outerText' ||
+  key === 'textContent'
 
 // https://stackoverflow.com/a/63116134
 export const toKebabCase = (str: string) =>
