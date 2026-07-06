@@ -4,11 +4,11 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "module": "preserve",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "checkJs": true,
     "jsx": "preserve",
-    "jsxImportSource": "./src",
+    "jsxImportSource": "./src/jsx-runtime",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -25,7 +25,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    "paths": {
+      "#reactivity": ["./src/reactivity/reactivity.ts"],
+      "#jsx-types": ["./src/jsx/types.ts"]
+    },
+    "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["src/index.ts", "src/composables.ts", "src/jsx-runtime.ts", "env.d.ts"]
+  "include": ["src", "env.d.ts"]
 }

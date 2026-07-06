@@ -4,12 +4,20 @@
   "description": "A minimal JSX runtime with fine-grained reactivity",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./composables": "./dist/composables.js",
+    "./jsx-runtime": "./dist/jsx-runtime.js",
+    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
+  },
+  "imports": {
+    "#reactivity": "./src/reactivity/reactivity.ts",
+    "#jsx-types": "./src/jsx/types.ts"
+  },
   "publishConfig": {
-    "exports": {
-      ".": "./dist/index.js",
-      "./composables": "./dist/composables.js",
-      "./jsx-runtime": "./dist/jsx-runtime.js",
-      "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
+    "imports": {
+      "#reactivity": "./dist/reactivity/reactivity.js",
+      "#jsx-types": "./dist/jsx/types.js"
     }
   },
   "sideEffects": "false",
@@ -20,8 +28,8 @@
   "scripts": {
     "build": "NODE_ENV=production rollup --config rollup.config.js && pnpm run types",
     "build:dev": "NODE_ENV=development rollup --config rollup.config.js",
-    "check": "tsc -b --noEmit --incremental",
-    "types": "tsc -p tsconfig.decl.json",
+    "check": "tsc -b --incremental",
+    "types": "tsc -b tsconfig.decl.json",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky",
     "prepack": "rm -r dist; pnpm run build"
@@ -71,7 +79,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://gitea.com/miru/fine-jsx.git"
+    "url": "https://codeberg.org/miru-media/fine-jsx.git"
   },
   "lint-staged": {
     "**/*.((ts|js|cjs)?(x)|vue|md)": [

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { effect, type MaybeRefOrGetter, onScopeDispose, ref, toValue, watch } from './reactivity'
+import { effect, type MaybeRefOrGetter, onScopeDispose, ref, toValue, watch } from '#reactivity'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export const useEventListener = <T extends Event>(
