@@ -26,6 +26,7 @@ import {
   unappend,
   unappendAndStop,
   updateChildNode,
+  watchFineDomNode,
 } from './utils'
 
 declare global {
@@ -84,7 +85,13 @@ export class FineComponentNode extends FineNode {
 
     withContext((this.context = { ...this.parentContext }), () => {
       this.scope.run(() => {
-        const fineNode = this.type(this.props) as FineNode
+        let fineNode = this.type(this.props) as FineNode | (() => FineNode)
+
+        if (typeof fineNode === 'function')
+          watchFineDomNode(
+            (fineNode = new FineDomNode('#fragment', { children: fineNode }, this.context, this.scope)),
+          )
+
         this.el = fineNode.el
         this.marker = fineNode.marker
       })

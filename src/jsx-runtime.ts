@@ -8,6 +8,7 @@ declare global {
   export namespace JSX {
     type IntrinsicElements = Record<string, unknown>
 
+    // all poperties are optional so that render functions can qualify as component return values
     interface Element {
       readonly [FINE_NODE_MARKER]?: true
 

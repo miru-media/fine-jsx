@@ -35,4 +35,4 @@ export type ComponentProps<Props = Record<string, unknown>, R = unknown> = {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type Component<Props extends Record<string, unknown> = {}, R = unknown> = (
   props: ComponentProps<Props, R>,
-) => JSX.Element
+) => JSX.Element | (() => JSX.Element)

@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import type { Component, ComponentProps, FineNodeChild, MaybeChild, Stop } from '#jsx-types'
-import { effect, getCurrentScope, onScopeDispose, watch } from '#reactivity'
+import { getCurrentScope } from '#reactivity'
 
 import { currentContext, FineComponentNode, FineDomNode, type FineNode } from './nodes.ts'
-import { isDocFrag } from './utils.ts'
+import { isDocFrag, watchFineDomNode } from './utils.ts'
 
 export const provide = (key: string | symbol, value: unknown) => {
   if (!currentContext) throw new Error('[fine-jsx] provide() called outside component context!')
@@ -31,17 +31,7 @@ export const jsx = (type: string | Component | Element, props: ComponentProps): 
 
   const fineNode = new FineDomNode(type, props, currentContext, parentScope)
 
-  if (props.children != null) {
-    watch([fineNode.getChildren.bind(fineNode)], fineNode.updateChildren.bind(fineNode))
-  }
-
-  if (!fineNode.isFragment) {
-    effect(fineNode.updateProps.bind(fineNode))
-
-    if (props.ref) props.ref.value = fineNode.el
-  }
-
-  onScopeDispose(fineNode.dispose.bind(fineNode))
+  watchFineDomNode(fineNode)
 
   return fineNode
 }

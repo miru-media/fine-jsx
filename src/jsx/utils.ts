@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import type { AppendedChild, FineNodeChild, MaybeChild } from '#jsx-types'
-import { toValue } from '#reactivity'
+import { effect, onScopeDispose, toValue, watch } from '#reactivity'
 
 import type { FineDomNode, FineNode } from './nodes.ts'
 
@@ -115,4 +115,20 @@ export const updateNodeChildren = (
 
   // if there are fewer children than before, unmount the extra from before
   for (let i = children.length; i < appendedNodes.length; i++) unappendAndStop(appendedNodes[i], appendTo)
+}
+
+export const watchFineDomNode = (fineNode: FineDomNode): void => {
+  const { props } = fineNode
+
+  if (props.children != null) {
+    watch([fineNode.getChildren.bind(fineNode)], fineNode.updateChildren.bind(fineNode))
+  }
+
+  if (!fineNode.isFragment) {
+    effect(fineNode.updateProps.bind(fineNode))
+
+    if (props.ref) props.ref.value = fineNode.el
+  }
+
+  onScopeDispose(fineNode.dispose.bind(fineNode))
 }
