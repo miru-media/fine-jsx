@@ -49,6 +49,7 @@ export default tseslint.config(
       '@typescript-eslint/strict-boolean-expressions': [
         'error',
         {
+          allowAny: true,
           allowNullableNumber: false,
           allowNullableBoolean: true,
           allowNullableObject: true,

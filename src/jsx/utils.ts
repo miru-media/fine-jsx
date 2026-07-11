@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import type { AppendedChild, FineNodeChild, MaybeChild } from '#jsx-types'
+import type { AppendedChild, MaybeChild, NodeOps } from '#jsx-types'
 import { effect, onScopeDispose, toValue, watch } from '#reactivity'
 
-import type { FineDomNode, FineNode } from './nodes.ts'
+import type { FineElementNode, FineNode } from './nodes.ts'
 
 export const FINE_NODE_MARKER = Symbol()
 
@@ -18,55 +18,78 @@ export const arrayFlatToValue = <T>(value: T | T[], result: T[] = []): T[] => {
   return result
 }
 
-export const isFineNode = (value: any): value is FineNode => value?.[FINE_NODE_MARKER] != null
+export const isFineNode = <
+  TNode extends object,
+  TElement extends TNode,
+  TFragment extends object,
+  TMarker extends TNode,
+>(
+  value: any,
+): value is FineNode<TNode, TElement, TFragment, TMarker> => value?.[FINE_NODE_MARKER] === true
 
-const isDomNode = (value: any): value is Node =>
-  value != null &&
-  typeof value.nodeType === 'number' &&
-  Object.prototype.toString.call(value) !== '[opbject Object]'
-const isTextNode = (value: any): value is Text => {
-  return isDomNode(value) && value.nodeType === 3
-}
+export const updateChildNode = <
+  TNode extends object,
+  TElement extends TNode,
+  TFragment extends object,
+  TMarker extends TNode,
+>(
+  ops: NodeOps<TNode, TElement, TFragment, TMarker>,
+  cur: MaybeChild<TNode>,
+  prev: AppendedChild<TNode, TFragment> | undefined,
+) => {
+  if (isFineNode<TNode, TElement, TFragment, TMarker>(cur)) return cur.el
 
-export const isDocFrag = (value: Node | DocumentFragment | undefined): value is DocumentFragment =>
-  value?.nodeType === 11
+  // return native directly without updating them. assume the parent controls all of its content
+  if (ops.isNativeNode(cur)) return cur
 
-export const updateChildNode = (cur: MaybeChild, prev: AppendedChild | undefined) => {
-  if (isFineNode(cur)) return cur.el
+  const prevDomNode = prev?.domNode
+  const textNode =
+    prevDomNode != undefined && !ops.isFragment(prevDomNode) && ops.isText(prevDomNode)
+      ? prevDomNode
+      : ops.createText()
 
-  // return domeNodes directly without updating them. assume the parent controls all of its content
-  if (isDomNode(cur)) return cur
-
-  const prevTextNode = prev?.domNode
-  const textNode = prevTextNode != undefined && isTextNode(prevTextNode) ? prevTextNode : new Text()
-
-  if (cur === false || cur == null) textNode.nodeValue = ''
-  else if (typeof cur === 'object') textNode.nodeValue = JSON.stringify(cur, null, '  ')
-  else textNode.nodeValue = String(cur)
+  ops.setText(
+    textNode,
+    cur === false || cur == null
+      ? ''
+      : typeof cur === 'object'
+        ? JSON.stringify(cur, null, '  ')
+        : String(cur),
+  )
 
   return textNode
 }
 
-export const unappend = (child: AppendedChild, parent: Node) => {
+export const unappend = <
+  TNode extends object,
+  TElement extends TNode,
+  TFragment extends object,
+  TMarker extends TNode,
+>(
+  ops: NodeOps<TNode, TElement, TFragment, TMarker>,
+  child: AppendedChild<TNode, TFragment>,
+  parent: TNode | TFragment,
+) => {
   const { domNode } = child
-  if (domNode.parentNode === parent) parent.removeChild(domNode)
+
+  if (!ops.isFragment(domNode) && ops.parentNode(domNode) === parent) ops.remove(domNode)
 }
 
-export const unappendAndStop = (child: AppendedChild, parent: Node) => {
+export const unappendAndStop = <
+  TNode extends object,
+  TElement extends TNode,
+  TFragment extends object,
+  TMarker extends TNode,
+>(
+  ops: NodeOps<TNode, TElement, TFragment, TMarker>,
+  child: AppendedChild<TNode, TFragment>,
+  parent: TNode | TFragment,
+) => {
   const { fineNode } = child
 
-  unappend(child, parent)
+  unappend(ops, child, parent)
   if (isFineNode(fineNode)) fineNode.scope?.stop()
 }
-
-export const isIgnoredPropKey = (key: string) =>
-  key === 'children' ||
-  key === 'ref' ||
-  key === 'innerHTML' ||
-  key === 'innerText' ||
-  key === 'outerHTML' ||
-  key === 'outerText' ||
-  key === 'textContent'
 
 // https://stackoverflow.com/a/63116134
 export const toKebabCase = (str: string) =>
@@ -85,39 +108,14 @@ export const setAttribute = (element: Element, name: string, value: unknown) => 
   else element.setAttribute(name, String(value))
 }
 
-export const updateNodeChildren = (
-  fineNode: FineDomNode,
-  children: (FineNodeChild | null | undefined)[],
+export const watchFineDomNode = <
+  TNode extends object,
+  TElement extends TNode,
+  TFragment extends object,
+  TMarker extends TNode,
+>(
+  fineNode: FineElementNode<TNode, TElement, TFragment, TMarker>,
 ): void => {
-  const { el: element, marker, appendedNodes } = fineNode
-  const appendTo = marker?.parentNode ?? element
-
-  children.forEach((child, childIndex) => {
-    const prevAppended = appendedNodes[childIndex] as AppendedChild | undefined
-    const prevDomNode = prevAppended?.domNode
-
-    const domNode = updateChildNode(child, prevAppended)
-    // insert the new child at the position of the previous node (which may be the same)
-    const beforeNode = isDocFrag(appendTo)
-      ? null
-      : ((isDocFrag(prevDomNode) ? prevDomNode[FINE_NODE_MARKER] : prevDomNode) ?? marker?.nextElementSibling)
-    if (beforeNode?.parentNode === appendTo) appendTo.insertBefore(domNode, beforeNode)
-    else appendTo.appendChild(domNode)
-
-    if ((isFineNode(child) && child !== prevAppended?.fineNode) || domNode !== prevAppended?.domNode) {
-      // remove the previous child if it changed
-      if (prevAppended != undefined) unappendAndStop(prevAppended, appendTo)
-
-      // update the list of appended children
-      appendedNodes[childIndex] = { fineNode: child, domNode }
-    }
-  })
-
-  // if there are fewer children than before, unmount the extra from before
-  for (let i = children.length; i < appendedNodes.length; i++) unappendAndStop(appendedNodes[i], appendTo)
-}
-
-export const watchFineDomNode = (fineNode: FineDomNode): void => {
   const { props } = fineNode
 
   if (props.children != null) {

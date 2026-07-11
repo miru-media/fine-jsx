@@ -34,9 +34,11 @@ const packageOptions = [
   {
     inputs: {
       index: 'src/index.ts',
-      composables: 'src/reactivity/composables.ts',
+      composables: 'src/dom/composables.ts',
       'jsx-runtime': 'src/jsx-runtime.ts',
       'jsx-dev-runtime': 'src/jsx-dev-runtime.ts',
+      'jsx/runtime-api': 'src/jsx/runtime-api.ts',
+      'jsx/create-runtime': 'src/jsx/create-runtime.ts',
     },
   },
 ]

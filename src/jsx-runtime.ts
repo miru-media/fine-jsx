@@ -20,4 +20,4 @@ declare global {
   }
 }
 
-export * from './jsx/runtime'
+export * from './dom/jsx-runtime-dom.ts'
