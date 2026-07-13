@@ -177,7 +177,7 @@ export class FineElementNode<
       const beforeNode = ops.isFragment(appendTo)
         ? null
         : ((ops.isFragment(prevDomNode) ? (FRAGMENT_MARKERS.get(prevDomNode) as TMarker) : prevDomNode) ??
-          ops.nextElementSibling(fragmentMarker))
+          ops.nextSibling(fragmentMarker))
 
       ops.insertBefore(
         domNode,

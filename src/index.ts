@@ -2,5 +2,5 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-export * from '#reactivity'
 export * from './jsx-runtime.ts'
+export * from './jsx/runtime-api.ts'

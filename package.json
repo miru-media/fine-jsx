@@ -1,14 +1,17 @@
 {
   "name": "fine-jsx",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "A minimal JSX runtime with fine-grained reactivity",
   "type": "module",
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./composables": "./dist/composables.js",
+    "./reactivity": "./dist/reactivity/reactivity.js",
+    "./composables": "./dist/dom/composables.js",
     "./jsx-runtime": "./dist/jsx-runtime.js",
-    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
+    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js",
+    "./runtime-api": "./dist/jsx/runtime-api.js",
+    "./create-runtime": "./dist/jsx/create-runtime.js"
   },
   "imports": {
     "#reactivity": "./src/reactivity/reactivity.ts",

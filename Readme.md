@@ -6,14 +6,77 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 # fine-jsx
 
-A minimal JSX runtime with fine-grained reactivity intended for libraries with simple UIs.
+A minimal JSX runtime with fine-grained reactivity intended for libraries with simple or complex UIs. Currently used by and developed for [Miru](https://miru.media/).
 
-TODO:
+The idea is:
 
-- [ ] Tests
-- [ ] Docs
-- [ ] Debugging tools
-- [ ] Use a signals polyfill?
+- JSX without React-style hooks
+- Vue-like reactivity with `ref()`, `computed()`, `watch()` and `effect()`, but without `reactive()` proxies
+- No virtual DOM
+- Relatively small bundle size
+- Can be applied to various platforms/engines/environments
+- Requires only a JSX transpiler and no other specific build tools
+
+# Example
+
+```tsx
+import { computed, ref } from 'fine-jsx'
+
+import { useEditor, useElementSize, splitTime } from '/utils.ts'
+// CSS modules with a bundler. Could also just use plain class strings
+import styles from './styles.module.css'
+
+// Components are just functions which may take props and return either a JSX element or a render function
+export const Playhead = () => {
+  // The component function may create refs and computeds as well as run watch()s and effect()s
+  const interactiveEl = ref<HTMLElement>()
+  // Like in Vue, "hooks" are just functions composing reactive values and effects
+  const size = useElementSize(interactiveEl)
+
+  const editor = useEditor()
+  const timeParts = computed(() => splitTime(editor.doc.currentTime))
+
+  return (
+    <div
+      inert
+      class={styles.timelinePlayhead}
+      // Element prop values can be refs or getters tracking reactive values
+      style={() => `--time-pill-width: ${size.value.width}px`}
+    >
+      {/* By using a function as a JSX child, changes to reactive values will trigger re-render of only this subtree */}
+      {() =>
+        editor.isMobileWorkspace ? (
+          <span
+            ref={interactiveEl}
+            // classes can be arrays of reactive or static values
+            class={[styles.timePill, styles.textBodySmall, styles.numeric]}
+          >
+            <span>{() => `${timeParts.value.hours}:${timeParts.value.minutes}`}</span>
+            <span class={styles.timePillRight}>
+              {() => `${timeParts.value.seconds}:${timeParts.value.subSeconds}`}
+            </span>
+
+            <svg class={styles.timePillDrop} viewBox="0 0 16 8">
+              <path d="M7.99282 8C7.99282 ... 7.99282 8Z" fill="currentColor" />
+            </svg>
+          </span>
+        ) : (
+          <svg ref={interactiveEl} class={styles.timelinePlayheadHandle} viewBox="0 0 11 12">
+            <path d="M0 2C0 0.895432 0.895431 ... 0 5.86249V2Z" fill="#FFFB24" />
+          </svg>
+        )
+      }
+      <div class={styles.timelineCursor} />
+    </div>
+  )
+}
+```
+
+# TODO
+
+- Tests
+- Docs
+- Debugging tools
 
 ## Funding
 

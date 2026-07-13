@@ -5,8 +5,7 @@
 import type { NodeOps } from '#jsx-types'
 import { isRef, toValue } from '#reactivity'
 
-import { createRuntime } from '../jsx/create-runtime'
-import { setAttribute, toClassName, toKebabCase } from '../jsx/utils'
+import { createRuntime, toClassName, toKebabCase } from '../jsx/create-runtime'
 
 import { SVG_TYPES } from './svgTypes'
 
@@ -18,6 +17,12 @@ const shouldIgnoreProp = (key: string) =>
   key === 'outerHTML' ||
   key === 'outerText' ||
   key === 'textContent'
+
+const setAttribute = (element: Element, name: string, value: unknown) => {
+  if (value == null) element.removeAttribute(name)
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+  else element.setAttribute(name, String(value))
+}
 
 const domNodeOps: NodeOps<Node, Element, DocumentFragment, Comment> = {
   createElement: function (type: string): Element {
@@ -70,7 +75,7 @@ const domNodeOps: NodeOps<Node, Element, DocumentFragment, Comment> = {
   },
   remove: (child) => child.parentNode?.removeChild(child),
   parentNode: (child) => child?.parentNode ?? null,
-  nextElementSibling: (node) => node?.nextElementSibling,
+  nextSibling: (node) => node?.nextElementSibling,
   isFragment: (node): node is DocumentFragment => node?.nodeType === 11,
   isNativeNode: (node): node is Node =>
     !!node &&
@@ -81,4 +86,3 @@ const domNodeOps: NodeOps<Node, Element, DocumentFragment, Comment> = {
 
 export const { jsx, jsxs, Fragment } = createRuntime(domNodeOps)
 export { jsx as h }
-export * from '../jsx/runtime-api.ts'

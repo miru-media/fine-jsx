@@ -31,17 +31,17 @@ export interface AppendedChild<TNode extends object, TFragment extends object> {
 
 export type Stop = () => void
 
-export type ComponentProps<Props = Record<string, unknown>, R = unknown> = {
+export type ComponentProps<Props = Record<string, unknown>, R = unknown, TNode extends object = any> = {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   [P in keyof Props]: Props[P] extends Function | Ref ? Props[P] : MaybeRef<Props[P]>
 } & {
   ref?: Ref<R | undefined>
-  children?: MaybeArray<MaybeRefOrGetter<FineNodeChild<never> | null | undefined>>
+  children?: MaybeArray<MaybeRefOrGetter<FineNodeChild<TNode> | null | undefined>>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type Component<Props extends Record<string, unknown> = {}, R = unknown> = (
-  props: ComponentProps<Props, R>,
+export type Component<Props extends Record<string, unknown> = {}, R = unknown, TNode extends object = any> = (
+  props: ComponentProps<Props, R, TNode>,
 ) => JSX.Element | (() => JSX.Element)
 
 export interface NodeOps<
@@ -60,7 +60,7 @@ export interface NodeOps<
   clearProp: (element: TElement, key: string, value: any) => void
   remove: (child: TNode) => void
   parentNode: (child: TNode | null | undefined) => TNode | null
-  nextElementSibling: (node: TElement | TMarker | null | undefined) => TElement | null | undefined
+  nextSibling: (node: TElement | TMarker | null | undefined) => TElement | null | undefined
   isFragment: (node: TNode | TFragment | null | undefined) => node is TFragment
   isNativeNode: (node: any) => node is TNode
   isText: (node: TNode) => boolean

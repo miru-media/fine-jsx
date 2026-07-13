@@ -35,3 +35,4 @@ export const render = <TNode extends object>(node: JSX.Element, root: TNode): St
 }
 
 export type { Component, ComponentProps, MaybeChild }
+export * from '#reactivity'

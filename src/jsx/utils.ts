@@ -93,7 +93,6 @@ export const unappendAndStop = <
 
 // https://stackoverflow.com/a/63116134
 export const toKebabCase = (str: string) =>
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
 
 /* eslint-disable @typescript-eslint/no-base-to-string */
@@ -101,11 +100,6 @@ export const toClassName = (value: unknown): string => {
   value = toValue(value)
   if (Array.isArray(value)) return value.map(toClassName).join(' ')
   return value === false ? '' : String(value ?? '')
-}
-
-export const setAttribute = (element: Element, name: string, value: unknown) => {
-  if (value == null) element.removeAttribute(name)
-  else element.setAttribute(name, String(value))
 }
 
 export const watchFineDomNode = <
