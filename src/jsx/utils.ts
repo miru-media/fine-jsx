@@ -7,7 +7,7 @@ import { effect, onScopeDispose, toValue, watch } from '#reactivity'
 
 import type { FineElementNode, FineNode } from './nodes.ts'
 
-export const FINE_NODE_MARKER = Symbol()
+export const FINE_NODE_MARKER = '__fineNode'
 
 export const arrayFlatToValue = <T>(value: T | T[], result: T[] = []): T[] => {
   const val = toValue(value)
@@ -94,6 +94,9 @@ export const unappendAndStop = <
 // https://stackoverflow.com/a/63116134
 export const toKebabCase = (str: string) =>
   str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
+
+export const toPascalCase = (text: string) =>
+  text.replace(/(^|-)(\w)/g, (_, _delimeter, letter: string) => letter.toUpperCase())
 
 /* eslint-disable @typescript-eslint/no-base-to-string */
 export const toClassName = (value: unknown): string => {

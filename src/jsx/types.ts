@@ -42,12 +42,12 @@ export type ComponentProps<Props = Record<string, unknown>, R = unknown, TNode e
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type Component<Props extends Record<string, unknown> = {}, R = unknown, TNode extends object = any> = (
   props: ComponentProps<Props, R, TNode>,
-) => JSX.Element | (() => JSX.Element)
+) => JSX.Element
 
 export interface NodeOps<
-  TNode = object,
+  TNode extends object = object,
   TElement extends TNode = TNode,
-  TFragment = object,
+  TFragment extends object = object,
   TMarker extends TNode = TNode,
 > {
   createElement: (type: string) => TElement
@@ -65,3 +65,9 @@ export interface NodeOps<
   isNativeNode: (node: any) => node is TNode
   isText: (node: TNode) => boolean
 }
+
+export type JsxResult<TNodeOps> = MaybeGetter<
+  TNodeOps extends NodeOps<infer TNode, infer TElement, infer TFragment, infer TMarker>
+    ? FineNode<TNode, TElement, TFragment, TMarker>
+    : never
+>

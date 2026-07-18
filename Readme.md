@@ -8,6 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 A minimal JSX runtime with fine-grained reactivity intended for libraries with simple or complex UIs. Currently used by and developed for [Miru](https://miru.media/).
 
+![This is fine.](./reactivity.jpg)
+
 The idea is:
 
 - JSX without React-style hooks
@@ -43,7 +45,7 @@ export const Playhead = () => {
       // Element prop values can be refs or getters tracking reactive values
       style={() => `--time-pill-width: ${size.value.width}px`}
     >
-      {/* By using a function as a JSX child, changes to reactive values will trigger re-render of only this subtree */}
+      {/* Use a function as a JSX child, to re-render only that subtree on reactive updates */}
       {() =>
         editor.isMobileWorkspace ? (
           <span

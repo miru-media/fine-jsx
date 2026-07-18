@@ -2,16 +2,12 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import { type _JSXElement } from './dom/jsx-runtime-dom.ts'
+
 declare global {
   export namespace JSX {
     type IntrinsicElements = Record<string, unknown>
-
-    interface Element {
-      // Typescript doesn't support optional function signatures in interfaces so instead,
-      // we include a property that's common to Objects and Functions so that there's
-      // overlap with render functions returned from components
-      toString(): string
-    }
+    type Element = _JSXElement
   }
 }
 

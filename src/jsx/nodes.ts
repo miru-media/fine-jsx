@@ -45,8 +45,7 @@ export abstract class FineNode<
   TElement extends TNode = TNode,
   TFragment extends object = object,
   TMarker extends TNode = TNode,
-> implements JSX.Element
-{
+> {
   readonly ops: NodeOps<TNode, TElement, TFragment, TMarker>
   readonly type: Component | string | TElement
   readonly scope: EffectScope | undefined
@@ -95,7 +94,9 @@ export class FineComponentNode<
 
     withContext((this.context = { ...this.parentContext }), () => {
       this.scope.run(() => {
-        let fineNode = this.type(this.props) as MaybeGetter<FineNode<TNode, TElement, TFragment, TMarker>>
+        let fineNode = this.type(this.props) as unknown as MaybeGetter<
+          FineNode<TNode, TElement, TFragment, TMarker>
+        >
 
         if (typeof fineNode === 'function')
           watchFineDomNode(

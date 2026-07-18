@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import type { NodeOps } from '#jsx-types'
+import type { MaybeGetter, NodeOps } from '#jsx-types'
 import { isRef, toValue } from '#reactivity'
 
 import { createRuntime, toClassName, toKebabCase } from '../jsx/create-runtime'
+import { type FineNode } from '../jsx/nodes'
 
 import { SVG_TYPES } from './svgTypes'
 
@@ -23,6 +24,8 @@ const setAttribute = (element: Element, name: string, value: unknown) => {
   // eslint-disable-next-line @typescript-eslint/no-base-to-string
   else element.setAttribute(name, String(value))
 }
+
+export type _JSXElement = MaybeGetter<FineNode<Node, Element, DocumentFragment, Comment>>
 
 const domNodeOps: NodeOps<Node, Element, DocumentFragment, Comment> = {
   createElement: function (type: string): Element {
