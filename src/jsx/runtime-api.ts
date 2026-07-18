@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import type { Component, ComponentProps, MaybeChild, Stop } from '#jsx-types'
+import type { Component, ComponentProps, MaybeChild, MaybeGetter, Stop } from '#jsx-types'
 
 import { currentContext, type FineNode } from './nodes.ts'
 
@@ -26,9 +26,10 @@ export const render = <
   TFragment extends object,
   TMarker extends TNode,
 >(
-  node: FineNode<TNode, TElement, TFragment, TMarker>,
+  node: MaybeGetter<FineNode<TNode, TElement, TFragment, TMarker>>,
   root: TNode,
 ): Stop => {
+  node = typeof node === 'function' ? node() : node
   node.ops.insertBefore(node.el, root, null)
 
   return () => {
