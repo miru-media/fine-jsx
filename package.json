@@ -1,6 +1,6 @@
 {
   "name": "fine-jsx",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "A minimal JSX runtime with fine-grained reactivity",
   "type": "module",
   "main": "dist/index.js",
@@ -35,7 +35,7 @@
     "types": "tsc -b tsconfig.decl.json",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky",
-    "prepack": "rm -r dist; pnpm run build"
+    "prepack": "rm -r dist; pnpm build && pnpm types"
   },
   "dependencies": {
     "@reactively/core": "^0.0.8"
